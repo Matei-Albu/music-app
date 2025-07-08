@@ -9,11 +9,24 @@
       "UnauthRoleName": "amplify-musicapp-dev-f4c24-unauthRole",
       "StackName": "amplify-musicapp-dev-f4c24",
       "StackId": "arn:aws:cloudformation:us-east-1:361769573705:stack/amplify-musicapp-dev-f4c24/a35ea580-1ae4-11f0-8033-0e4b796e2be5",
-      "AmplifyAppId": "djs6gppfbfp00"
+      "AmplifyAppId": "djs6gppfbfp00",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-musicapp-dev-f4c24-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
       "auth": {
         "musicappb1d1e5a4": {}
+      },
+      "function": {
+        "userSongsFunction": {
+          "deploymentBucketName": "amplify-musicapp-dev-f4c24-deployment",
+          "s3Key": "amplify-builds/userSongsFunction-49694d304c462b566370-build.zip"
+        }
+      },
+      "storage": {
+        "userSongsTable": {}
+      },
+      "api": {
+        "userSongsAPI": {}
       }
     }
   }

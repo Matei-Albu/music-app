@@ -1,0 +1,10 @@
+{
+  "resourceName": "userSongsTable",
+  "tableName": "songTable",
+  "partitionKey": {
+    "fieldName": "userId",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}
