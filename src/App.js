@@ -1,23 +1,36 @@
+import React, { useState } from 'react';
 import './App.css';
-import { BrowserRouter as Router, Route, NavLink, Routes } from 'react-router-dom';
-import Home from './pages/home';
-import AppPage from './pages/app-page'; 
+import Navigation from './components/Nav';
+import Home from './pages/Home';
+import AppPage from './pages/AppPage';
 
-function App() {
+const App = () => {
+  const [currentPage, setCurrentPage] = useState('home');
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const renderPage = () => {
+    switch(currentPage) {
+      case 'home':
+        return <Home />;
+      case 'app':
+        return <AppPage />;
+      default:
+        return <Home />;
+    }
+  };
+
   return (
     <div className="App">
-      <Router>
-        <div className="content">
-          <NavLink className="content" exact="true" activeclassname="active" to="/">Home</NavLink>
-          <NavLink className="content" activeclassname="active" to="/app">App</NavLink>
-        </div>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/app" element={<AppPage />} />
-        </Routes>
-      </Router>
+      <Navigation 
+        currentPage={currentPage} 
+        onPageChange={handlePageChange} 
+      />
+      {renderPage()}
     </div>
   );
-}
+};
 
 export default App;
