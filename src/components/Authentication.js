@@ -1,12 +1,18 @@
 import React from 'react';
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 
-const Authentication = ({ children, onSignOut }) => {
+const Authentication = ({ children }) => {
   return (
-    <div>
-      <h1>Music app content</h1>
-      {children}
-      <button onClick={onSignOut}>Sign Out</button>
-    </div>
+    <Authenticator>
+      {({ signOut, user }) => (
+        <div>
+          <h1>Welcome, {user?.username || 'User'}!</h1>
+          {children}
+          <button onClick={signOut}>Sign Out</button>
+        </div>
+      )}
+    </Authenticator>
   );
 };
 

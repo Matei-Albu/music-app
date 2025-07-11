@@ -8,7 +8,6 @@ const AppPage = () => {
   const [query, setQuery] = useState("");
   const [selectedSongs, setSelectedSongs] = useState([]);
 
-  // Dummy song list
   const songs = [
     "Bohemian Rhapsody",
     "Stairway to Heaven",
@@ -22,7 +21,6 @@ const AppPage = () => {
     "Shake It Off"
   ];
 
-  // Filter songs based on search query (case-insensitive)
   const filteredSongs = songs.filter(song =>
     song.toLowerCase().includes(query.toLowerCase())
   );
@@ -38,16 +36,14 @@ const AppPage = () => {
   const handleSelectSong = (song) => {
     if (!selectedSongs.includes(song)) {
       setSelectedSongs([...selectedSongs, song]);
-      
-      // API POST call
+
       fetch('http://127.0.0.1:8000/api/songs', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ song: song }),
-      })
-      .catch(err => console.error('Error adding song:', err));
+        body: JSON.stringify({ song }),
+      }).catch(err => console.error('Error adding song:', err));
     }
   };
 
@@ -55,24 +51,20 @@ const AppPage = () => {
     setSelectedSongs([]);
   };
 
-  const handleSignOut = () => {
-    console.log('Sign out clicked');
-  };
-
   return (
-    <Authentication onSignOut={handleSignOut}>
+    <Authentication>
       <Search
         query={query}
         onQueryChange={handleQueryChange}
         onSubmit={handleSearch}
       />
-      
-      <SongList 
+
+      <SongList
         songs={filteredSongs}
         onSelectSong={handleSelectSong}
       />
-      
-      <SelectedSongs 
+
+      <SelectedSongs
         selectedSongs={selectedSongs}
         onClearSelection={handleClearSelection}
       />
