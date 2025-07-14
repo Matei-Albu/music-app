@@ -8,7 +8,7 @@ const Authentication = ({ children }) => {
       {({ signOut, user }) => (
         <div>
           <h1>Welcome, {user?.username || 'User'}!</h1>
-          {children}
+          {children({ user, signOut })}
           <button onClick={signOut}>Sign Out</button>
         </div>
       )}

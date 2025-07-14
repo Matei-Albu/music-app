@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Authentication from '../components/Authentication';
 import Search from '../components/Search';
 import SongList from '../components/SongList';
 import SelectedSongs from '../components/SelectedSongs';
 
-const AppPage = () => {
+// Create a separate component to handle the authenticated content
+const AuthenticatedContent = ({ user }) => {
   const [query, setQuery] = useState("");
   const [selectedSongs, setSelectedSongs] = useState([]);
 
@@ -25,6 +26,24 @@ const AppPage = () => {
     song.toLowerCase().includes(query.toLowerCase())
   );
 
+  // Load user's songs when component mounts or user changes
+  useEffect(() => {
+    if (user?.username) {
+      loadUserSongs(user.username);
+    }
+  }, [user?.username]);
+
+  const loadUserSongs = async (username) => {
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/api/songs/${username}`);
+      const data = await response.json();
+      setSelectedSongs(data.songs || []);
+    } catch (err) {
+      console.error('Error loading songs:', err);
+      setSelectedSongs([]);
+    }
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
   };
@@ -33,41 +52,66 @@ const AppPage = () => {
     setQuery(e.target.value);
   };
 
-  const handleSelectSong = (song) => {
+  const handleSelectSong = async (song) => {
     if (!selectedSongs.includes(song)) {
       setSelectedSongs([...selectedSongs, song]);
-
-      fetch('http://127.0.0.1:8000/api/songs', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ song }),
-      }).catch(err => console.error('Error adding song:', err));
+      try {
+        await fetch('http://127.0.0.1:8000/api/songs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            song,
+            username: user.username
+          }),
+        });
+      } catch (err) {
+        console.error('Error adding song:', err);
+        // If there's an error (like duplicate), reload the songs to sync with backend
+        if (err.response?.status === 400) {
+          loadUserSongs(user.username);
+        }
+      }
     }
   };
 
-  const handleClearSelection = () => {
-    setSelectedSongs([]);
+  const handleClearSelection = async () => {
+    try {
+      // Clear all songs from backend for this user
+      await fetch(`http://127.0.0.1:8000/api/songs/${user.username}`, {
+        method: 'DELETE',
+      });
+      // Clear local state
+      setSelectedSongs([]);
+    } catch (err) {
+      console.error('Error clearing songs:', err);
+    }
   };
 
   return (
-    <Authentication>
+    <>
       <Search
         query={query}
         onQueryChange={handleQueryChange}
         onSubmit={handleSearch}
       />
-
       <SongList
         songs={filteredSongs}
         onSelectSong={handleSelectSong}
       />
-
       <SelectedSongs
         selectedSongs={selectedSongs}
         onClearSelection={handleClearSelection}
       />
+    </>
+  );
+};
+
+const AppPage = () => {
+  return (
+    <Authentication>
+      {({ user }) => <AuthenticatedContent user={user} />}
     </Authentication>
   );
 };
