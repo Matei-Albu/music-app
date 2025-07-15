@@ -89,6 +89,19 @@ const AuthenticatedContent = ({ user }) => {
     }
   };
 
+  const handleDeleteSong = async (songToDelete) => {
+    try {
+      // Delete specific song from backend
+      await fetch(`http://127.0.0.1:8000/api/songs/${user.username}/${encodeURIComponent(songToDelete)}`, {
+        method: 'DELETE',
+      });
+      // Remove from local state
+      setSelectedSongs(selectedSongs.filter(song => song !== songToDelete));
+    } catch (err) {
+      console.error('Error deleting song:', err);
+    }
+  };
+
   return (
     <>
       <Search
@@ -103,6 +116,7 @@ const AuthenticatedContent = ({ user }) => {
       <SelectedSongs
         selectedSongs={selectedSongs}
         onClearSelection={handleClearSelection}
+        onDeleteSong={handleDeleteSong}
       />
     </>
   );
