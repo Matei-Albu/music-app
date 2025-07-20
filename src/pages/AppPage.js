@@ -8,23 +8,8 @@ import SelectedSongs from '../components/SelectedSongs';
 const AuthenticatedContent = ({ user }) => {
   const [query, setQuery] = useState("");
   const [selectedSongs, setSelectedSongs] = useState([]);
-
-  const songs = [
-    "Bohemian Rhapsody",
-    "Stairway to Heaven",
-    "Hotel California",
-    "Imagine",
-    "Smells Like Teen Spirit",
-    "Sweet Child O' Mine",
-    "Hey Jude",
-    "Billie Jean",
-    "Wonderwall",
-    "Shake It Off"
-  ];
-
-  const filteredSongs = songs.filter(song =>
-    song.toLowerCase().includes(query.toLowerCase())
-  );
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Load user's songs when component mounts or user changes
   useEffect(() => {
@@ -44,17 +29,50 @@ const AuthenticatedContent = ({ user }) => {
     }
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
+    
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsSearching(true);
+    
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: query.trim() }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Search failed');
+      }
+
+      const data = await response.json();
+      setSearchResults(data.songs || []);
+    } catch (err) {
+      console.error('Error searching songs:', err);
+      setSearchResults([]);
+    } finally {
+      setIsSearching(false);
+    }
   };
 
   const handleQueryChange = (e) => {
     setQuery(e.target.value);
+    if (!e.target.value.trim()) {
+      setSearchResults([]);
+    }
   };
 
   const handleSelectSong = async (song) => {
     if (!selectedSongs.includes(song)) {
       setSelectedSongs([...selectedSongs, song]);
+      
       try {
         await fetch('http://127.0.0.1:8000/api/songs', {
           method: 'POST',
@@ -68,7 +86,6 @@ const AuthenticatedContent = ({ user }) => {
         });
       } catch (err) {
         console.error('Error adding song:', err);
-        // If there's an error (like duplicate), reload the songs to sync with backend
         if (err.response?.status === 400) {
           loadUserSongs(user.username);
         }
@@ -78,11 +95,10 @@ const AuthenticatedContent = ({ user }) => {
 
   const handleClearSelection = async () => {
     try {
-      // Clear all songs from backend for this user
       await fetch(`http://127.0.0.1:8000/api/songs/${user.username}`, {
         method: 'DELETE',
       });
-      // Clear local state
+      
       setSelectedSongs([]);
     } catch (err) {
       console.error('Error clearing songs:', err);
@@ -91,11 +107,10 @@ const AuthenticatedContent = ({ user }) => {
 
   const handleDeleteSong = async (songToDelete) => {
     try {
-      // Delete specific song from backend
       await fetch(`http://127.0.0.1:8000/api/songs/${user.username}/${encodeURIComponent(songToDelete)}`, {
         method: 'DELETE',
       });
-      // Remove from local state
+      
       setSelectedSongs(selectedSongs.filter(song => song !== songToDelete));
     } catch (err) {
       console.error('Error deleting song:', err);
@@ -109,10 +124,14 @@ const AuthenticatedContent = ({ user }) => {
         onQueryChange={handleQueryChange}
         onSubmit={handleSearch}
       />
+      
       <SongList
-        songs={filteredSongs}
+        songs={searchResults}
         onSelectSong={handleSelectSong}
       />
+      
+      {isSearching && <p>Searching songs...</p>}
+      
       <SelectedSongs
         selectedSongs={selectedSongs}
         onClearSelection={handleClearSelection}
