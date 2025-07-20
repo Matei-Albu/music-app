@@ -31,14 +31,12 @@ const AuthenticatedContent = ({ user }) => {
 
   const handleSearch = async (e) => {
     e.preventDefault();
-    
     if (!query.trim()) {
       setSearchResults([]);
       return;
     }
 
     setIsSearching(true);
-    
     try {
       const response = await fetch('http://127.0.0.1:8000/api/search', {
         method: 'POST',
@@ -70,9 +68,11 @@ const AuthenticatedContent = ({ user }) => {
   };
 
   const handleSelectSong = async (song) => {
-    if (!selectedSongs.includes(song)) {
-      setSelectedSongs([...selectedSongs, song]);
-      
+    // song is now an object with {name, artist, title, image, listeners, url}
+    const songName = song.name || song; // Handle both object and string cases
+    
+    if (!selectedSongs.includes(songName)) {
+      setSelectedSongs([...selectedSongs, songName]);
       try {
         await fetch('http://127.0.0.1:8000/api/songs', {
           method: 'POST',
@@ -80,8 +80,12 @@ const AuthenticatedContent = ({ user }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            song,
-            username: user.username
+            song: songName,
+            username: user.username,
+            // You can also store additional data if you want:
+            artist: song.artist,
+            title: song.title,
+            image: song.image
           }),
         });
       } catch (err) {
@@ -98,7 +102,6 @@ const AuthenticatedContent = ({ user }) => {
       await fetch(`http://127.0.0.1:8000/api/songs/${user.username}`, {
         method: 'DELETE',
       });
-      
       setSelectedSongs([]);
     } catch (err) {
       console.error('Error clearing songs:', err);
@@ -110,7 +113,6 @@ const AuthenticatedContent = ({ user }) => {
       await fetch(`http://127.0.0.1:8000/api/songs/${user.username}/${encodeURIComponent(songToDelete)}`, {
         method: 'DELETE',
       });
-      
       setSelectedSongs(selectedSongs.filter(song => song !== songToDelete));
     } catch (err) {
       console.error('Error deleting song:', err);
@@ -124,14 +126,11 @@ const AuthenticatedContent = ({ user }) => {
         onQueryChange={handleQueryChange}
         onSubmit={handleSearch}
       />
-      
       <SongList
         songs={searchResults}
         onSelectSong={handleSelectSong}
       />
-      
       {isSearching && <p>Searching songs...</p>}
-      
       <SelectedSongs
         selectedSongs={selectedSongs}
         onClearSelection={handleClearSelection}
