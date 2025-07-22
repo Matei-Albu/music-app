@@ -17,6 +17,13 @@ const Nav = ({ currentPage, onPageChange }) => {
       >
         App
       </button>
+      <button
+        className="content" 
+        onClick={() => onPageChange('mylist')}
+        style={{ fontWeight: currentPage === 'mylist' ? 'bold' : 'normal' }}
+      >
+        My List
+      </button>
     </div>
   );
 };

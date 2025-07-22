@@ -3,6 +3,7 @@ import './App.css';
 import Navigation from './components/Nav';
 import Home from './pages/Home';
 import AppPage from './pages/AppPage';
+import MyList from './pages/MyList';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -17,6 +18,8 @@ const App = () => {
         return <Home />;
       case 'app':
         return <AppPage />;
+      case 'mylist':
+        return <MyList />;
       default:
         return <Home />;
     }
