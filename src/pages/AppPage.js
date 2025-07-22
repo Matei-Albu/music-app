@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Authentication from '../components/Authentication';
 import Search from '../components/Search';
 import SongList from '../components/SongList';
-import SelectedSongs from '../components/SelectedSongs';
 
 // Create a separate component to handle the authenticated content
 const AuthenticatedContent = ({ user }) => {
@@ -11,14 +10,14 @@ const AuthenticatedContent = ({ user }) => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
 
-  // Load user's songs when component mounts or user changes
+  // Load user's songs initially to avoid adding duplicates
   useEffect(() => {
     if (user?.username) {
-      loadUserSongs(user.username);
+      fetchUserSongs(user.username);
     }
   }, [user?.username]);
 
-  const loadUserSongs = async (username) => {
+  const fetchUserSongs = async (username) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/songs/${username}`);
       const data = await response.json();
@@ -68,9 +67,8 @@ const AuthenticatedContent = ({ user }) => {
   };
 
   const handleSelectSong = async (song) => {
-    // song is now an object with {name, artist, title, image, listeners, url}
-    const songName = song.name || song; // Handle both object and string cases
-    
+    const songName = song.name || song;
+
     if (!selectedSongs.includes(songName)) {
       setSelectedSongs([...selectedSongs, songName]);
       try {
@@ -82,40 +80,14 @@ const AuthenticatedContent = ({ user }) => {
           body: JSON.stringify({
             song: songName,
             username: user.username,
-            // You can also store additional data if you want:
             artist: song.artist,
             title: song.title,
-            image: song.image
+            image: song.image,
           }),
         });
       } catch (err) {
         console.error('Error adding song:', err);
-        if (err.response?.status === 400) {
-          loadUserSongs(user.username);
-        }
       }
-    }
-  };
-
-  const handleClearSelection = async () => {
-    try {
-      await fetch(`http://127.0.0.1:8000/api/songs/${user.username}`, {
-        method: 'DELETE',
-      });
-      setSelectedSongs([]);
-    } catch (err) {
-      console.error('Error clearing songs:', err);
-    }
-  };
-
-  const handleDeleteSong = async (songToDelete) => {
-    try {
-      await fetch(`http://127.0.0.1:8000/api/songs/${user.username}/${encodeURIComponent(songToDelete)}`, {
-        method: 'DELETE',
-      });
-      setSelectedSongs(selectedSongs.filter(song => song !== songToDelete));
-    } catch (err) {
-      console.error('Error deleting song:', err);
     }
   };
 
@@ -131,11 +103,6 @@ const AuthenticatedContent = ({ user }) => {
         onSelectSong={handleSelectSong}
       />
       {isSearching && <p>Searching songs...</p>}
-      <SelectedSongs
-        selectedSongs={selectedSongs}
-        onClearSelection={handleClearSelection}
-        onDeleteSong={handleDeleteSong}
-      />
     </>
   );
 };
