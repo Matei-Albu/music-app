@@ -21,7 +21,11 @@ const AuthenticatedContent = ({ user }) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/songs/${username}`);
       const data = await response.json();
-      setSelectedSongs(data.songs || []);
+      // Extract song names for duplicate checking
+      const songNames = (data.songs || []).map(song => 
+        typeof song === 'string' ? song : song.song
+      );
+      setSelectedSongs(songNames);
     } catch (err) {
       console.error('Error loading songs:', err);
       setSelectedSongs([]);
@@ -68,7 +72,6 @@ const AuthenticatedContent = ({ user }) => {
 
   const handleSelectSong = async (song) => {
     const songName = song.name || song;
-
     if (!selectedSongs.includes(songName)) {
       setSelectedSongs([...selectedSongs, songName]);
       try {
@@ -83,10 +86,14 @@ const AuthenticatedContent = ({ user }) => {
             artist: song.artist,
             title: song.title,
             image: song.image,
+            listeners: song.listeners,
+            url: song.url,
           }),
         });
       } catch (err) {
         console.error('Error adding song:', err);
+        // Remove from local state if API call failed
+        setSelectedSongs(selectedSongs.filter(s => s !== songName));
       }
     }
   };

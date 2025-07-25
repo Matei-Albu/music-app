@@ -9,7 +9,6 @@ const SongList = ({ songs, onSelectSong }) => {
         {songs.map((song, index) => (
           <SongItem key={index} song={song} onSelectSong={onSelectSong} />
         ))}
-        {songs.length === 0 && <p>No matching songs found.</p>}
       </ul>
     </>
   );
