@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Authentication from '../components/Authentication';
 import SelectedSongs from '../components/SelectedSongs';
+import Search from '../components/Search';
 
 const AuthenticatedContent = ({ user }) => {
-  const [selectedSongs, setSelectedSongs] = useState([]);
+    const [query, setQuery] = useState("");
+    const [selectedSongs, setSelectedSongs] = useState([]);
 
   useEffect(() => {
     if (user?.username) {
@@ -23,6 +25,16 @@ const AuthenticatedContent = ({ user }) => {
     }
   };
 
+  const handleQueryChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const getFilteredSongs = () => {
+    return selectedSongs.filter(song =>
+      (song.song || song).toLowerCase().includes(query.toLowerCase())
+    );
+  };
+
   const handleClearSelection = async () => {
     try {
       await fetch(`http://127.0.0.1:8000/api/songs/${user.username}`, {
@@ -36,12 +48,10 @@ const AuthenticatedContent = ({ user }) => {
 
   const handleDeleteSong = async (songToDelete) => {
     try {
-      // Use song name for deletion
       const songName = typeof songToDelete === 'string' ? songToDelete : songToDelete.song;
       await fetch(`http://127.0.0.1:8000/api/songs/${user.username}/${encodeURIComponent(songName)}`, {
         method: 'DELETE',
       });
-      // Filter out the deleted song
       setSelectedSongs(selectedSongs.filter(song => {
         const currentSongName = typeof song === 'string' ? song : song.song;
         return currentSongName !== songName;
@@ -52,11 +62,17 @@ const AuthenticatedContent = ({ user }) => {
   };
 
   return (
-    <SelectedSongs
-      selectedSongs={selectedSongs}
-      onClearSelection={handleClearSelection}
-      onDeleteSong={handleDeleteSong}
-    />
+    <>
+      <Search
+        query={query}
+        onQueryChange={handleQueryChange}
+      />
+      <SelectedSongs
+        selectedSongs={getFilteredSongs()}
+        onClearSelection={handleClearSelection}
+        onDeleteSong={handleDeleteSong}
+      />
+    </>
   );
 };
 

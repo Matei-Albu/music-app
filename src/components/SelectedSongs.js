@@ -11,7 +11,7 @@ const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
           style={{
             listStyleType: 'none',
             padding: 0,
-            maxWidth: '600px',
+            maxWidth: '1000px',
             margin: '0 auto',
           }}
         >
@@ -44,7 +44,6 @@ const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
                 />
               )}
               
-              {/* Placeholder for songs without images */}
               {!song.image && (
                 <div
                   style={{
@@ -64,7 +63,6 @@ const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
                 </div>
               )}
               
-              {/* Song Details */}
               <div style={{ flex: 1, textAlign: 'left' }}>
                 <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '4px' }}>
                   {song.title || song.name || song.song || song}
@@ -81,7 +79,6 @@ const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
                 )}
               </div>
               
-              {/* Delete Button */}
               <button
                 onClick={() => onDeleteSong(song.song || song.name || song)}
                 style={{
