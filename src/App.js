@@ -4,6 +4,7 @@ import Navigation from './components/Nav';
 import Home from './pages/Home';
 import AppPage from './pages/AppPage';
 import MyList from './pages/MyList';
+import Reviews from './pages/Reviews';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
@@ -20,6 +21,8 @@ const App = () => {
         return <AppPage />;
       case 'mylist':
         return <MyList />;
+      case 'reviews':
+        return <Reviews />;
       default:
         return <Home />;
     }
