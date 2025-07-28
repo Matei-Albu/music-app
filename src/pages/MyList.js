@@ -3,6 +3,7 @@ import Authentication from '../components/Authentication';
 import SelectedSongs from '../components/SelectedSongs';
 import Search from '../components/Search';
 
+
 const AuthenticatedContent = ({ user }) => {
     const [query, setQuery] = useState("");
     const [selectedSongs, setSelectedSongs] = useState([]);
