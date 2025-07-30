@@ -4,7 +4,6 @@
   box-sizing: border-box;
 }
 
-/* Remove body margins */
 body {
   margin: 0;
   padding: 0;
@@ -13,19 +12,16 @@ body {
     sans-serif;
 }
 
-/* Remove default margins from your main app container */
 #root {
   margin: 0;
   padding: 0;
 }
 
-/* If you have an App component wrapper */
 .App {
   margin: 0;
   padding: 0;
 }
 
-/* Ensure html doesn't have margins */
 html {
   margin: 0;
   padding: 0;
