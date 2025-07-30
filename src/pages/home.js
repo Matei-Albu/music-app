@@ -54,7 +54,7 @@ const HomePage = () => {
     const styles = {
       container: {
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        background: "linear-gradient(135deg,rgb(190, 91, 91) 0%, #764ba2 100%)",
         color: "white",
         position: "relative",
         overflow: "hidden",

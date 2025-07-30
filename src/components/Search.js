@@ -6,8 +6,9 @@ const Search = ({ query, onQueryChange, onSubmit }) => {
     alignItems: 'center',
     justifyContent: 'center',
     gap: '12px',
+    background: 'linear-gradient(90deg,rgb(255, 255, 255),rgb(254, 253, 255))',
     borderRadius: '16px',
-    boxShadow: '0 4px 20px rgba(74, 74, 74, 0.2)',
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.2)',
     maxWidth: '600px',
     margin: '24px auto',
   };
