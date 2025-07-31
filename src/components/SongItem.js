@@ -26,9 +26,10 @@ const SongItem = ({ song, onSelectSong }) => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        border: '1px solid #ddd',
-        borderRadius: '12px',
-        backgroundColor: '#fafafa',
+        border: "1px solid rgba(118, 75, 162, 0.6)",
+        borderRadius: "12px",
+        backgroundColor: "rgba(76, 45, 109, 0.3)",
+        backdropFilter: "blur(5px)",
         cursor: 'pointer',
         boxShadow: isHovered
           ? '0 4px 12px rgba(0, 0, 0, 0.1)'
@@ -55,10 +56,10 @@ const SongItem = ({ song, onSelectSong }) => {
           }}
         />
         <div>
-          <div style={{ fontSize: '16px', fontWeight: '600' }}>{song.title || song.name}</div>
-          <div style={{ color: '#555', marginTop: '3px' }}>by {song.artist || 'Unknown Artist'}</div>
+          <div style={{ fontSize: '16px', fontWeight: '600' , color: "white"}}>{song.title || song.name}</div>
+          <div style={{ color: '#555', marginTop: '3px' , color: "white"}}>by {song.artist || 'Unknown Artist'}</div>
           {song.listeners && (
-            <div style={{ fontSize: '13px', color: '#888', marginTop: '2px' }}>
+            <div style={{ fontSize: '13px', color: '#888', marginTop: '2px' , color: "white"}}>
               {parseInt(song.listeners).toLocaleString()} listeners
             </div>
           )}
@@ -70,7 +71,7 @@ const SongItem = ({ song, onSelectSong }) => {
           style={{
             fontSize: '14px',
             fontWeight: '600',
-            color: '#2e7d32',
+            color: "#4caf50", 
             marginLeft: '20px',
             opacity: isClicked ? 1 : 0,
             transition: 'opacity 0.3s ease-in-out',

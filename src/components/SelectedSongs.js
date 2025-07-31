@@ -25,7 +25,8 @@ const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
                 padding: '10px',
                 border: '1px solid #ddd',
                 borderRadius: '8px',
-                backgroundColor: '#f9f9f9',
+                backgroundColor: "rgba(76, 45, 109, 0.3)",
+                border: "1px solid rgba(118, 75, 162, 0.6)",
                 position: 'relative',
               }}
             >
@@ -64,16 +65,16 @@ const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
               )}
               
               <div style={{ flex: 1, textAlign: 'left' }}>
-                <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '4px' }}>
+                <div style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '4px' , color: "white" }}>
                   {song.title || song.name || song.song || song}
                 </div>
                 {song.artist && (
-                  <div style={{ color: '#666', fontSize: '14px', marginBottom: '4px' }}>
+                  <div style={{ color: '#666', fontSize: '14px', marginBottom: '4px', color: "white" }}>
                     by {song.artist}
                   </div>
                 )}
                 {song.listeners && (
-                  <div style={{ color: '#888', fontSize: '12px' }}>
+                  <div style={{ color: '#888', fontSize: '12px', color: "white" }}>
                     {song.listeners} listeners
                   </div>
                 )}
