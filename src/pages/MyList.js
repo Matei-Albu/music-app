@@ -18,7 +18,6 @@ const AuthenticatedContent = ({ user }) => {
     try {
       const response = await fetch(`http://127.0.0.1:8000/api/songs/${username}`);
       const data = await response.json();
-      // Now we receive full song objects from the backend
       setSelectedSongs(data.songs || []);
     } catch (err) {
       console.error('Error loading songs:', err);

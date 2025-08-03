@@ -8,15 +8,15 @@ import Reviews from './pages/Reviews';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
-
+  
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
-
+  
   const renderPage = () => {
     switch(currentPage) {
       case 'home':
-        return <Home />;
+        return <Home onPageChange={handlePageChange} />;
       case 'app':
         return <AppPage />;
       case 'mylist':
@@ -24,15 +24,15 @@ const App = () => {
       case 'reviews':
         return <Reviews />;
       default:
-        return <Home />;
+        return <Home onPageChange={handlePageChange} />;
     }
   };
-
+  
   return (
     <div className="App">
-      <Navigation 
-        currentPage={currentPage} 
-        onPageChange={handlePageChange} 
+      <Navigation
+        currentPage={currentPage}
+        onPageChange={handlePageChange}
       />
       {renderPage()}
     </div>

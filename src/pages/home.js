@@ -1,5 +1,4 @@
-
-const HomePage = () => {
+const HomePage = ({ onPageChange }) => {
     const selectedSongs = [
       {
         id: 1,
@@ -430,7 +429,11 @@ const HomePage = () => {
             </div>
   
             {/* CTA Button */}
-            <button style={styles.ctaButton} className="cta-button" onClick={() => (window.location.href = "/AppPage")}>
+            <button 
+              style={styles.ctaButton} 
+              className="cta-button" 
+              onClick={() => onPageChange('app')}
+            >
               Get started — it's free!
             </button>
   
@@ -443,4 +446,3 @@ const HomePage = () => {
   }
   
   export default HomePage
-  
