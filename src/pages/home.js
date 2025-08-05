@@ -5,21 +5,21 @@ const HomePage = ({ onPageChange }) => {
         title: "High and Dry",
         artist: "Radiohead",
         listeners: "2138064 listeners",
-        albumArt: "/placeholder.svg?height=60&width=60",
+        albumArt: "https://i.scdn.co/image/ab67616d0000b2739293c743fa542094336c5e12",
       },
       {
         id: 2,
         title: "The Hills",
         artist: "The Weeknd",
         listeners: "1815361 listeners",
-        albumArt: "/placeholder.svg?height=60&width=60",
+        albumArt: "https://cdn-images.dzcdn.net/images/cover/eea9f7fc913300e40307a0ff70dc73cf/1900x1900-000000-80-0-0.jpg",
       },
       {
         id: 3,
         title: "Highest in the room",
         artist: "Travis Scott",
         listeners: "1119165 listeners",
-        albumArt: "/placeholder.svg?height=60&width=60",
+        albumArt: "https://i1.sndcdn.com/artworks-UadiEdB7xRMl-0-t1080x1080.jpg",
       },
     ]
   
@@ -187,22 +187,16 @@ const HomePage = ({ onPageChange }) => {
       albumArt: {
         width: "64px",
         height: "64px",
-        background: "linear-gradient(135deg, #8b5cf6, #3b82f6, #ec4899)",
         borderRadius: "8px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        boxShadow: "0 10px 25px -5px rgba(0,0,0,0.1)",
+        overflow: "hidden",
+        boxShadow: "0 10px 25px -5px rgba(0,0,0,0.3)",
+        flexShrink: 0,
       },
-      albumArtInner: {
-        width: "48px",
-        height: "48px",
-        background: "rgba(31,41,55,0.8)",
-        borderRadius: "6px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "12px",
+      albumArtImage: {
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        display: "block",
       },
       songInfo: {
         textAlign: "left",
@@ -286,7 +280,7 @@ const HomePage = ({ onPageChange }) => {
         padding: "16px 32px",
         borderRadius: "25px",
         fontSize: "18px",
-        border: "none",
+        border: "none",  
         cursor: "pointer",
         transition: "all 0.3s",
         boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)",
@@ -301,15 +295,11 @@ const HomePage = ({ onPageChange }) => {
     const StarIcon = ({ filled }) => (
       <svg
         style={styles.star}
-        fill={filled ? "#fbbf24" : "none"}
-        stroke={filled ? "#fbbf24" : "#6b7280"}
+        fill={filled ? "#fbbf24" : "#6b7280"}
         viewBox="0 0 24 24"
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
+        <polygon
+          points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
         />
       </svg>
     )
@@ -375,7 +365,11 @@ const HomePage = ({ onPageChange }) => {
                     <div key={song.id} style={styles.songItem} className="song-item">
                       <div style={styles.songContent}>
                         <div style={styles.albumArt}>
-                          <div style={styles.albumArtInner}>🎵</div>
+                          <img 
+                            src={song.albumArt} 
+                            alt={`${song.title} by ${song.artist}`}
+                            style={styles.albumArtImage}
+                          />
                         </div>
                         <div style={styles.songInfo}>
                           <h5 style={styles.songTitle}>{song.title}</h5>
@@ -396,13 +390,8 @@ const HomePage = ({ onPageChange }) => {
               {/* Song Reviews */}
               <div style={styles.reviewsContainer}>
                 <h4 style={styles.sectionTitle}>
-                  <svg width="24" height="24" fill="#fbbf24" stroke="#fbbf24" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976-2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"
-                    />
+                  <svg width="24" height="24" fill="#fbbf24" viewBox="0 0 24 24">
+                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
                   </svg>
                   Recent Reviews
                 </h4>
@@ -432,7 +421,7 @@ const HomePage = ({ onPageChange }) => {
             <button 
               style={styles.ctaButton} 
               className="cta-button" 
-              onClick={() => onPageChange('app')}
+              onClick={() => onPageChange && onPageChange('app')}
             >
               Get started — it's free!
             </button>
