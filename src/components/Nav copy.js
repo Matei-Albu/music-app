@@ -1,3 +1,4 @@
+"use client"
 
 const Nav = ({ currentPage, onPageChange }) => {
   const navItems = [
