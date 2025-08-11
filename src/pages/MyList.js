@@ -3,10 +3,9 @@ import Authentication from '../components/Authentication';
 import SelectedSongs from '../components/SelectedSongs';
 import Search from '../components/Search';
 
-
 const AuthenticatedContent = ({ user }) => {
-    const [query, setQuery] = useState("");
-    const [selectedSongs, setSelectedSongs] = useState([]);
+  const [query, setQuery] = useState("");
+  const [selectedSongs, setSelectedSongs] = useState([]);
 
   useEffect(() => {
     if (user?.username) {
@@ -31,11 +30,17 @@ const AuthenticatedContent = ({ user }) => {
 
   const getFilteredSongs = () => {
     return selectedSongs.filter(song =>
-      (song.song || song).toLowerCase().includes(query.toLowerCase())
+      (song.song || song).toLowerCase().includes(query.toLowerCase()) ||
+      (song.artist && song.artist.toLowerCase().includes(query.toLowerCase())) ||
+      (song.title && song.title.toLowerCase().includes(query.toLowerCase()))
     );
   };
 
   const handleClearSelection = async () => {
+    if (!window.confirm('Are you sure you want to clear all songs? This will also delete all your reviews.')) {
+      return;
+    }
+    
     try {
       await fetch(`http://127.0.0.1:8000/api/songs/${user.username}`, {
         method: 'DELETE',
@@ -47,8 +52,13 @@ const AuthenticatedContent = ({ user }) => {
   };
 
   const handleDeleteSong = async (songToDelete) => {
+    const songName = typeof songToDelete === 'string' ? songToDelete : songToDelete.song;
+    
+    if (!window.confirm(`Are you sure you want to delete "${songName}"? This will also delete your review if you have one.`)) {
+      return;
+    }
+    
     try {
-      const songName = typeof songToDelete === 'string' ? songToDelete : songToDelete.song;
       await fetch(`http://127.0.0.1:8000/api/songs/${user.username}/${encodeURIComponent(songName)}`, {
         method: 'DELETE',
       });
@@ -58,6 +68,13 @@ const AuthenticatedContent = ({ user }) => {
       }));
     } catch (err) {
       console.error('Error deleting song:', err);
+    }
+  };
+
+  const handleReviewUpdate = () => {
+    // Reload songs to get updated review data
+    if (user?.username) {
+      loadUserSongs(user.username);
     }
   };
 
@@ -71,6 +88,8 @@ const AuthenticatedContent = ({ user }) => {
         selectedSongs={getFilteredSongs()}
         onClearSelection={handleClearSelection}
         onDeleteSong={handleDeleteSong}
+        onReviewUpdate={handleReviewUpdate}
+        username={user.username}
       />
     </>
   );

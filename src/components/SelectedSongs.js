@@ -1,8 +1,58 @@
 import React, { useState } from 'react';
+import ReviewModel from './ReviewModel';
 
-const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
+const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong, onReviewUpdate, username }) => {
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [clickedIndex, setClickedIndex] = useState(null);
+  const [reviewModelOpen, setReviewModelOpen] = useState(false);
+  const [currentSong, setCurrentSong] = useState(null);
+
+  const handleReviewClick = (song) => {
+    setCurrentSong(song);
+    setReviewModelOpen(true);
+  };
+
+  const handleReviewSubmit = async (song, score, reviewText) => {
+    try {
+      const reviewData = {
+        song_name: song.song || song.name || song,
+        artist: song.artist || 'Unknown Artist',
+        title: song.title || song.name || song.song || song,
+        username: username,
+        score: score,
+        review_text: reviewText,
+        image: song.image
+      };
+
+      const response = await fetch('http://127.0.0.1:8000/api/reviews', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(reviewData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit review');
+      }
+
+      // Call parent component to refresh the song list
+      if (onReviewUpdate) {
+        onReviewUpdate();
+      }
+
+      alert('Review submitted successfully!');
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      throw error;
+    }
+  };
+
+  const getScoreColor = (score) => {
+    if (score >= 7) return '#4CAF50'; // Green
+    if (score >= 4) return '#FFA726'; // Orange
+    return '#F44336'; // Red
+  };
 
   return (
     <div style={{ textAlign: 'center', marginTop: '20px' }}>
@@ -23,7 +73,7 @@ const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
 
             const handleClick = () => {
               setClickedIndex(index);
-              setTimeout(() => setClickedIndex(null), 400); // brief click animation
+              setTimeout(() => setClickedIndex(null), 400);
             };
 
             return (
@@ -97,11 +147,70 @@ const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
                     </div>
                   )}
                   {song.listeners && (
-                    <div style={{ fontSize: '12px', color: 'white' }}>
+                    <div style={{ fontSize: '12px', color: 'white', marginBottom: '8px' }}>
                       {song.listeners} listeners
                     </div>
                   )}
+                  
+                  {/* Review Display */}
+                  {song.has_review && (
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '10px',
+                      marginTop: '8px'
+                    }}>
+                      <span style={{
+                        backgroundColor: getScoreColor(song.user_score),
+                        color: 'white',
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                      }}>
+                        {song.user_score}/10
+                      </span>
+                      <span style={{ 
+                        color: '#ccc', 
+                        fontSize: '12px',
+                        fontStyle: 'italic',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                        maxWidth: '200px'
+                      }}>
+                        "{song.user_review}"
+                      </span>
+                    </div>
+                  )}
                 </div>
+
+                {/* Review Button */}
+                <button
+                  onClick={() => handleReviewClick(song)}
+                  style={{
+                    position: 'absolute',
+                    top: '10px',
+                    right: '50px',
+                    padding: '4px 8px',
+                    backgroundColor: song.has_review ? '#4CAF50' : '#007BFF',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '11px',
+                    whiteSpace: 'nowrap',
+                    transition: 'all 0.2s ease-in-out',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'scale(1)';
+                  }}
+                >
+                  {song.has_review ? '✏️ Edit' : '⭐ Review'}
+                </button>
 
                 {/* Delete Button */}
                 <button
@@ -167,6 +276,17 @@ const SelectedSongs = ({ selectedSongs, onClearSelection, onDeleteSong }) => {
           Clear All
         </button>
       )}
+
+      <ReviewModel
+        song={currentSong}
+        isOpen={reviewModelOpen}
+        onClose={() => {
+          setReviewModelOpen(false);
+          setCurrentSong(null);
+        }}
+        onReviewSubmit={handleReviewSubmit}
+        existingReview={currentSong}
+      />
     </div>
   );
 };
